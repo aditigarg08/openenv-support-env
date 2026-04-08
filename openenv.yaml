@@ -1,0 +1,13 @@
+name: support-ticket-env
+description: Customer support ticket classification environment
+
+tasks:
+  - name: easy
+  - name: medium
+  - name: hard
+
+actions:
+  - classify_ticket
+
+observations:
+  - ticket_list
