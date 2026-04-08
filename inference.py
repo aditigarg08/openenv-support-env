@@ -21,7 +21,9 @@ def main():
             predicted_priority="high"
         )
 
-        result = env.step(action)
+        result = env.reset()
+        obs = result["observation"]
+        done = result["done"]
 
         reward = result["reward"]
         done = result["done"]
