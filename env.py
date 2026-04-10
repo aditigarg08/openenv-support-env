@@ -7,7 +7,6 @@ class SupportEnv:
         self.done = False
         self.step_count = 0
 
-    # ✅ RESET (FIXED)
     def reset(self):
         self.tickets = [
             Ticket(id=1, text="App crashes on login", priority="high"),
@@ -17,35 +16,27 @@ class SupportEnv:
         self.done = False
         self.step_count = 0
 
+        obs = Observation(tickets=self.tickets, last_action=None)
+
         return {
-            "observation": Observation(
-                tickets=self.tickets,
-                last_action=None
-            ),
+            "observation": obs,
             "reward": 0.0,
             "done": False,
             "info": {}
         }
 
-    # ✅ STEP (CLEAN + PARTIAL REWARD)
     def step(self, action: Action):
         self.step_count += 1
 
-        # find correct ticket
         correct = next((t for t in self.tickets if t.id == action.ticket_id), None)
 
-        # safe fallback
         if correct is None:
             reward = 0.0
+        elif action.predicted_priority == correct.priority:
+            reward = 1.0
         else:
-            if action.predicted_priority == correct.priority:
-                reward = 1.0
-            elif correct.priority == "high" and action.predicted_priority == "medium":
-                reward = 0.5   # partial reward
-            else:
-                reward = 0.0
+            reward = 0.0
 
-        # end condition
         if self.step_count >= len(self.tickets):
             self.done = True
 
@@ -57,12 +48,4 @@ class SupportEnv:
             "reward": reward,
             "done": self.done,
             "info": {}
-        }
-
-    # ✅ STATE (SAFE FORMAT)
-    def state(self):
-        return {
-            "tickets": [t.dict() for t in self.tickets],
-            "done": self.done,
-            "step_count": self.step_count
         }
