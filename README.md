@@ -1,37 +1,37 @@
+---
+title: OpenEnv Support Ticket
+emoji: 🤖
+colorFrom: blue
+colorTo: green
+sdk: docker
+app_file: app.py
+pinned: false
+---
+
 # 🧠 OpenEnv Support Ticket Environment
 
 ## 📌 Overview
-This project implements a real-world OpenEnv environment that simulates customer support ticket triage. The goal is to train and evaluate AI agents to classify support tickets into appropriate priority levels (low, medium, high).
+This project implements an OpenEnv environment for customer support ticket triage. It simulates classification of tickets into priority levels.
 
 ## 🎯 Objective
-Agents interact with the environment using the standard OpenEnv API:
-- `reset()`
-- `step(action)`
-- `state()`
+Agents interact using:
+- reset()
+- step(action)
+- state()
 
-The task is to correctly classify tickets based on their content while maximizing reward.
-
----
+Goal: classify tickets correctly and maximize reward.
 
 ## 🧩 Tasks
-
-### 🟢 Easy
-Simple and clearly defined tickets with obvious priority.
-
-### 🟡 Medium
-Mixed tickets requiring better understanding of context.
-
-### 🔴 Hard
-Ambiguous tickets that require reasoning and judgment.
-
----
+- Easy: Clear priority tickets  
+- Medium: Mixed context tickets  
+- Hard: Ambiguous tickets  
 
 ## ⚙️ Action Space
 Agents perform:
-- `classify` → assign priority to a ticket
+- classify → assign priority (low, medium, high)
 
-Example:
-```python
+## ▶️ Run
+python inference.py
 Action(
     action_type="classify",
     ticket_id=1,
