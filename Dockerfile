@@ -1,9 +1,8 @@
 FROM python:3.10
 
 WORKDIR /app
-
 COPY . .
 
 RUN pip install --no-cache-dir pydantic openai
 
-CMD ["python", "inference.py"]
+CMD ["python", "app.py"]
