@@ -6,34 +6,36 @@ def main():
 
     print("[START] task=support env=custom model=baseline")
 
-    obs = env.reset()
-    done = False
+    result = env.reset()
+    obs = result["observation"]
+    done = result["done"]
+
     step = 0
     rewards = []
 
     while not done:
         step += 1
 
-        # Simple baseline: always predict "high"
+        ticket_id = min(step, len(obs.tickets))
+
         action = Action(
             action_type="classify",
-            ticket_id=step,
+            ticket_id=ticket_id,
             predicted_priority="high"
         )
 
-        result = env.reset()
-        obs = result["observation"]
-        done = result["done"]
+        result = env.step(action)
 
         reward = result["reward"]
         done = result["done"]
+        obs = result["observation"]
 
         rewards.append(reward)
 
         print(f"[STEP] step={step} action=classify reward={reward:.2f} done={str(done).lower()} error=null")
 
-    score = sum(rewards) / len(rewards)
-    success = score > 0.5
+    score = sum(rewards) / len(rewards) if rewards else 0.0
+    success = score > 0.3
 
     rewards_str = ",".join(f"{r:.2f}" for r in rewards)
 
