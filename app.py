@@ -1,7 +1,12 @@
-from inference import main
-import time
-
-if __name__ == "__main__":
-    main()
-    while True:
-        time.sleep(60)
+@app.post("/reset")
+def reset():
+    obs = env.reset()
+    return {
+        "observation": {
+            "tickets": [t.dict() for t in obs.tickets],
+            "last_action": obs.last_action
+        },
+        "reward": 0.0,
+        "done": False,
+        "info": {}
+    }
