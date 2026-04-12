@@ -1,26 +1,31 @@
+import os
+from openai import OpenAI
+
 from env import SupportEnv
 from models import Action
+
+API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
+MODEL_NAME = os.getenv("MODEL_NAME", "Qwen/Qwen2.5-72B-Instruct")
+HF_TOKEN = os.getenv("HF_TOKEN")
+
+client = OpenAI(base_url=API_BASE_URL, api_key=HF_TOKEN)
 
 def main():
     env = SupportEnv()
 
-    print("[START] task=support env=custom model=baseline")
+    print(f"[START] task=support env=openenv model={MODEL_NAME}")
 
-    result = env.reset()
-    obs = result["observation"]
-    done = result["done"]
-
+    obs = env.reset()
+    done = False
     step = 0
     rewards = []
 
     while not done:
         step += 1
 
-        ticket_id = min(step, len(obs.tickets))
-
         action = Action(
             action_type="classify",
-            ticket_id=ticket_id,
+            ticket_id=step,
             predicted_priority="high"
         )
 
@@ -28,14 +33,13 @@ def main():
 
         reward = result["reward"]
         done = result["done"]
-        obs = result["observation"]
 
         rewards.append(reward)
 
         print(f"[STEP] step={step} action=classify reward={reward:.2f} done={str(done).lower()} error=null")
 
-    score = sum(rewards) / len(rewards) if rewards else 0.0
-    success = score > 0.3
+    score = sum(rewards) / len(rewards)
+    success = score > 0.5
 
     rewards_str = ",".join(f"{r:.2f}" for r in rewards)
 
